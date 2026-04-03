@@ -202,8 +202,8 @@ body {
 /* ===== HERO BANNER ===== */
 .hero-banner {
   position: relative;
-  height: 100vh;
-  min-height: 100vh; /* Ensure it stays full screen */
+  height: 50vh; /* Reduced from 100vh for a tighter profile */
+  min-height: 400px;
   display: flex;
   align-items: flex-end;
   overflow: hidden;
