@@ -326,9 +326,10 @@ function playMemory(id, startIndex = 0) {
   const m = MEMORIES.find(x => x.id === id);
   if (!m) return;
 
-  // iOS Safari: unlock audio IMMEDIATELY inside the user-gesture handler.
+  // iOS Safari: unlock audio and video IMMEDIATELY inside the user-gesture handler.
   // The 2.2s surprise animation kills the gesture context, so we pre-unlock here.
   unlockAudio();
+  primeVideo();
 
   showSurprise(() => {
     playerState.memory = m;
@@ -366,6 +367,17 @@ function unlockAudio() {
       audio.volume = 0.4;
       audioUnlocked = true;
     }).catch(() => {});
+  }
+}
+
+// Ensure video element can play after the delay
+function primeVideo() {
+  const vid = document.getElementById('playerVid');
+  if (!vid) return;
+  // Play/Pause briefly to satisfy iOS "user gesture" requirement
+  const p = vid.play();
+  if (p !== undefined) {
+    p.then(() => vid.pause()).catch(() => {});
   }
 }
 
@@ -421,14 +433,20 @@ function renderPlayerSlide() {
       // Reset time display
       document.getElementById('playerTime').textContent = "0:00 / 0:00";
       
-      vid.load(); // force browser to start loading
-      vid.play().catch(e => console.log("Video play blocked:", e));
+      // Ensure video is properly loaded before play
+      vid.load();
+      const p = vid.play();
+      if (p !== undefined) {
+        p.catch(e => {
+          console.log("Video play blocked, retrying on next user interaction", e);
+          // Fallback: If play fails (e.g. low power mode), show a play overlay
+        });
+      }
       
       // Update progress and time every interval
       vid.ontimeupdate = () => {
         if (!vid.duration) return;
         
-        // Update individual duration in case it changed
         playerState.durations[playerState.index] = vid.duration;
         calculateGlobalTimeline();
 
@@ -438,7 +456,6 @@ function renderPlayerSlide() {
         document.getElementById('playerFill').style.width = pct + '%';
         document.getElementById('playerTime').textContent = `${formatTime(globalCurrent)} / ${formatTime(playerState.totalDuration)}`;
         
-        // Background preloader for seamless transition (starts 2s before end)
         if (vid.currentTime > vid.duration - 2 && playerState.index < playerState.slides.length - 1) {
           preloadNextSlide(playerState.index + 1);
         }

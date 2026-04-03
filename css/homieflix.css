@@ -243,6 +243,11 @@ body {
   padding: 0 4rem 5rem;
   max-width: 600px;
 }
+@media (max-width: 768px) {
+  .hero-content {
+    padding: 0 1.5rem 8rem; /* Extra bottom padding for mobile bottom nav */
+  }
+}
 
 .hero-badge {
   font-size: 0.7rem;
@@ -694,9 +699,10 @@ body {
 .hf-player {
   position: fixed;
   inset: 0;
-  z-index: 3000;
+  z-index: 9999; /* Higher than everything else */
   background: #000;
   overflow: hidden;
+  display: none; /* Controlled by JS */
 }
 
 .player-bg {
