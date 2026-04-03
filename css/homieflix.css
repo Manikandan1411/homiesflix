@@ -65,8 +65,8 @@ body {
 
 #intro-tagline {
   margin-top: 1.5rem;
-  font-size: 1rem;
-  letter-spacing: 0.4em;
+  font-size: 0.8rem; /* Reduced from 1rem for a more subtle look */
+  letter-spacing: 0.45em;
   color: var(--hf-muted);
   text-transform: uppercase;
   opacity: 0;
