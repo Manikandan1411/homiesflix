@@ -172,7 +172,7 @@
       width: 100%; height: 100%;
     }
     .lb-img {
-      max-height: 90vh; max-width: 90vw; object-fit: contain;
+      max-height: 80vh; max-width: 95vw; object-fit: contain;
       border-radius: 4px; box-shadow: 0 40px 100px rgba(0,0,0,0.9);
       user-select: none; position: relative; z-index: 1;
     }
@@ -236,7 +236,7 @@
     }
     .video-modal.open { display: flex; }
     .video-modal video {
-      max-height: 84vh; max-width: 90vw;
+      max-height: 75vh; max-width: 95vw; object-fit: contain;
       border-radius: 10px; box-shadow: 0 30px 80px rgba(0,0,0,0.8);
       animation: lbIn 0.3s ease;
     }
@@ -306,6 +306,26 @@
     <a href="timeline.html" onclick="toggleMobileMenu()">Timeline</a>
     <a href="signatures.html" onclick="toggleMobileMenu()">Signatures</a>
   </div>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav">
+    <a href="index.html" class="mob-nav-item">
+      <span class="mob-nav-icon">🏠</span>
+      <span>Home</span>
+    </a>
+    <a href="albums.html" class="mob-nav-item active">
+      <span class="mob-nav-icon">📚</span>
+      <span>Albums</span>
+    </a>
+    <a href="timeline.html" class="mob-nav-item">
+      <span class="mob-nav-icon">📅</span>
+      <span>Timeline</span>
+    </a>
+    <a href="signatures.html" class="mob-nav-item">
+      <span class="mob-nav-icon">✍️</span>
+      <span>Sign</span>
+    </a>
+  </nav>
 
 <!-- ALBUM HEADER -->
 <div class="album-header">
