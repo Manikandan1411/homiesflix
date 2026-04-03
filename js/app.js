@@ -68,23 +68,6 @@ window.addEventListener('load', async () => {
   });
 });
 
-// ===== MOBILE MENU =====
-function toggleMobileMenu() {
-  const menu = document.getElementById('mobileMenu');
-  const toggle = document.getElementById('menuToggle');
-  const body = document.body;
-
-  menu.classList.toggle('active');
-  toggle.classList.toggle('active');
-  
-  // Prevent scrolling when menu is open
-  if (menu.classList.contains('active')) {
-    body.style.overflow = 'hidden';
-  } else {
-    body.style.overflow = '';
-  }
-}
-
 
 // ===== INIT APP =====
 function initApp() {
@@ -467,33 +450,6 @@ function renderPlayerSlide() {
   const isSingleMovie = playerState.slides.length > 20; 
   document.getElementById('playerCounter').style.opacity = isSingleMovie ? '0' : '1';
   document.getElementById('playerCounter').textContent = `${playerState.index + 1} / ${total}`;
-
-  // Mobile: Tap to reveal controls
-  if (window.innerWidth <= 900) {
-    setupMobileControls();
-  }
-}
-
-function setupMobileControls() {
-  const overlay = document.getElementById('playerOverlay');
-  const controls = overlay.querySelector('.player-controls');
-  const titleBar = overlay.querySelector('.player-title-bar');
-  
-  // Initial state: hidden for cinematic feel
-  gsap.set([controls, titleBar], { opacity: 0, y: 20 });
-  
-  overlay.onclick = (e) => {
-    // Don't toggle if clicking a button or the progress bar
-    if (e.target.closest('button') || e.target.closest('.player-progress-wrap')) return;
-
-    const isVisible = controls.style.opacity === '1';
-    gsap.to([controls, titleBar], { 
-      opacity: isVisible ? 0 : 1, 
-      y: isVisible ? 20 : 0, 
-      duration: 0.4, 
-      ease: 'power2.out' 
-    });
-  };
 }
 
 function preloadNextSlide(idx) {
