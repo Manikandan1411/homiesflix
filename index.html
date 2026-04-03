@@ -209,6 +209,15 @@
         <div class="slide-caption" id="slideCaption"></div>
       </div>
     </div>
+    
+    <!-- MOBILE PLAY OVERLAY (for Low Power Mode) -->
+    <div id="mobilePlayOverlay" style="display:none; position:absolute; inset:0; background:rgba(0,0,0,0.4); z-index:100; cursor:pointer;" onclick="manualVideoStart()">
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:#fff; gap:10px;">
+        <span style="font-size:3rem;">▶</span>
+        <span style="font-size:0.8rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;">Tap to Play Video</span>
+      </div>
+    </div>
+
     <div class="player-controls">
       <div class="player-title-bar">
         <span id="playerTitle"></span>

@@ -381,6 +381,15 @@ function primeVideo() {
   }
 }
 
+function manualVideoStart() {
+  const vid = document.getElementById('playerVid');
+  if (vid) {
+    vid.play().then(() => {
+      document.getElementById('mobilePlayOverlay').style.display = 'none';
+    }).catch(() => {});
+  }
+}
+
 function calculateGlobalTimeline() {
   let offset = 0;
   playerState.slides.forEach((slide, i) => {
@@ -438,10 +447,15 @@ function renderPlayerSlide() {
       const p = vid.play();
       if (p !== undefined) {
         p.catch(e => {
-          console.log("Video play blocked, retrying on next user interaction", e);
-          // Fallback: If play fails (e.g. low power mode), show a play overlay
+          console.log("Video play blocked, showing overlay", e);
+          document.getElementById('mobilePlayOverlay').style.display = 'block';
         });
       }
+      
+      // Clear overlay on successful manual start
+      vid.onplay = () => {
+        document.getElementById('mobilePlayOverlay').style.display = 'none';
+      };
       
       // Update progress and time every interval
       vid.ontimeupdate = () => {
