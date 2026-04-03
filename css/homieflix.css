@@ -202,7 +202,7 @@ body {
 /* ===== HERO BANNER ===== */
 .hero-banner {
   position: relative;
-  height: 85vh;
+  height: 100vh;
   min-height: 500px;
   display: flex;
   align-items: flex-end;
@@ -213,7 +213,7 @@ body {
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: center top;
+  background-position: center center;
   background-repeat: no-repeat;
   will-change: opacity, transform;
   z-index: 0;
@@ -797,14 +797,41 @@ body {
 .player-btns button {
   background: transparent;
   border: none;
-  color: #fff;
-  font-size: 1.4rem;
+  color: var(--hf-red);
+  font-size: 1.2rem;
   cursor: pointer;
-  padding: 0.3rem;
-  transition: transform 0.15s, opacity 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
 }
-.player-btns button:hover { transform: scale(1.2); }
+.player-btns button:hover { transform: scale(1.1); }
 
+.hero-ctrl-btn {
+  background: transparent;
+  border: none;
+  color: var(--hf-red);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.mob-nav-icon {
+  font-size: 1.3rem;
+  margin-bottom: 2px;
+  color: var(--hf-red);
+}
+
+.bi {
+  color: var(--hf-red);
+  vertical-align: middle;
+}
 .vol-wrap {
   display: flex; align-items: center; gap: 0.5rem;
   color: var(--hf-muted); font-size: 0.9rem;

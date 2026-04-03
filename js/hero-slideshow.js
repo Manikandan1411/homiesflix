@@ -52,12 +52,12 @@ const HeroSlideshow = (() => {
     clearTimeout(timer); 
     vidEl.pause(); 
     gsap.killTweensOf('#heroProgressBar');
-    if (document.getElementById('heroPlayPauseBtn')) document.getElementById('heroPlayPauseBtn').textContent = '▶';
+    if (document.getElementById('heroPlayPauseBtn')) document.getElementById('heroPlayPauseBtn').innerHTML = '<i class="bi bi-play-fill"></i>';
   }
   function resume() { 
     paused = false; 
     if (initialized) _scheduleNext(); else vidEl.play().catch(()=>{}); 
-    if (document.getElementById('heroPlayPauseBtn')) document.getElementById('heroPlayPauseBtn').textContent = '⏸';
+    if (document.getElementById('heroPlayPauseBtn')) document.getElementById('heroPlayPauseBtn').innerHTML = '<i class="bi bi-pause-fill"></i>';
   }
 
   function next() { _showItem(current + 1); }
@@ -78,7 +78,7 @@ const HeroSlideshow = (() => {
     }
     
     const muteBtn = document.getElementById('heroMuteBtn');
-    if (muteBtn) muteBtn.textContent = vidEl.muted ? '🔇' : '🔊';
+    if (muteBtn) muteBtn.innerHTML = vidEl.muted ? '<i class="bi bi-volume-mute-fill"></i>' : '<i class="bi bi-volume-up-fill"></i>';
   }
 
   // ── Private ───────────────────────────────────────────────

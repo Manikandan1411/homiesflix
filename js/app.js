@@ -591,7 +591,7 @@ function startPlayerInterval() {
 
 function togglePlay() {
   playerState.playing = !playerState.playing;
-  document.getElementById('playPauseBtn').textContent = playerState.playing ? '⏸' : '▶';
+  document.getElementById('playPauseBtn').innerHTML = playerState.playing ? '<i class="bi bi-pause-fill"></i>' : '<i class="bi bi-play-fill"></i>';
   if (playerState.playing) {
     startPlayerInterval();
     tryPlayMusic();
