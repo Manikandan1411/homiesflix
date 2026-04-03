@@ -72,6 +72,7 @@
       flex-wrap: wrap;
     }
     .stat-item { text-align: center; }
+    .stat-icon { color: var(--hf-red); font-size: 1.2rem; margin-bottom: 0.2rem; }
     .stat-num {
       font-family: var(--font-display);
       font-size: 2rem;
@@ -317,7 +318,7 @@
 
   <!-- ALBUMS HERO -->
   <div class="albums-hero">
-    <div class="albums-hero-eyebrow">🎬 HOMIEFLIX ORIGINALS</div>
+    <div class="albums-hero-eyebrow"><i class="bi bi-film"></i> HOMIEFLIX ORIGINALS</div>
     <h1>MEMORY <span>ALBUMS</span></h1>
     <p>Your story. Your way. 20 cinematic collections.</p>
   </div>
@@ -373,13 +374,13 @@
         <div class="modal-meta">
           <span id="modalYear"></span>
           <span id="modalDuration"></span>
-          <span class="modal-match">❤️ 98% Match</span>
+          <span class="modal-match"><i class="bi bi-heart-fill"></i> 98% Match</span>
         </div>
         <div class="modal-tags" id="modalTags"></div>
         <p id="modalDesc"></p>
         <div class="modal-btns">
-          <button class="btn-play" id="modalPlayBtn">▶ Play Memories</button>
-          <button class="btn-list" id="modalListBtn" onclick="toggleFavorite()">+ My List</button>
+          <button class="btn-play" id="modalPlayBtn"><i class="bi bi-play-fill"></i> Play Memories</button>
+          <button class="btn-list" id="modalListBtn" onclick="toggleFavorite()"><i class="bi bi-plus-lg"></i> My List</button>
         </div>
       </div>
     </div>

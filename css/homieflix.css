@@ -203,7 +203,7 @@ body {
 .hero-banner {
   position: relative;
   height: 100vh;
-  min-height: 500px;
+  min-height: 100vh; /* Ensure it stays full screen */
   display: flex;
   align-items: flex-end;
   overflow: hidden;
@@ -213,7 +213,7 @@ body {
   position: absolute;
   inset: 0;
   background-size: cover;
-  background-position: center center;
+  background-position: center 20%; /* Adjusted for better framing of faces */
   background-repeat: no-repeat;
   will-change: opacity, transform;
   z-index: 0;
@@ -240,13 +240,8 @@ body {
 .hero-content {
   position: relative;
   z-index: 4;
-  padding: 0 4rem 5rem;
+  padding: 0 4rem 10rem; /* Increased bottom padding for full-screen feel */
   max-width: 600px;
-}
-@media (max-width: 768px) {
-  .hero-content {
-    padding: 0 1.5rem 8rem; /* Extra bottom padding for mobile bottom nav */
-  }
 }
 
 .hero-badge {
@@ -292,7 +287,7 @@ body {
   letter-spacing: 0.05em;
 }
 .hero-match {
-  color: #46d369;
+  color: var(--hf-red); /* Red Symbols - Match Indicator */
   font-weight: 700;
   font-size: 0.85rem;
 }
@@ -375,14 +370,14 @@ body {
 .hero-ctrl-btn {
   background: transparent;
   border: none;
-  color: #fff;
+  color: var(--hf-red); /* Red Symbols */
   width: 32px;
   height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -832,6 +827,13 @@ body {
   color: var(--hf-red);
   vertical-align: middle;
 }
+.modal-match {
+  color: var(--hf-red) !important;
+  font-weight: 700;
+}
+.row-title span, .row-title i {
+  color: var(--hf-red);
+}
 .vol-wrap {
   display: flex; align-items: center; gap: 0.5rem;
   color: var(--hf-muted); font-size: 0.9rem;
@@ -1234,8 +1236,13 @@ body {
   .mob-nav-item.active {
     color: var(--hf-red);
   }
+  .mob-nav-item.active .mob-nav-icon i {
+    color: var(--hf-red);
+  }
   .mob-nav-icon {
     font-size: 1.2rem;
+    color: var(--hf-muted);
+    transition: color 0.2s;
   }
   
   /* Add padding to main content so bottom nav doesn't hide anything */
