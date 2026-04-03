@@ -326,12 +326,16 @@ function playMemory(id, startIndex = 0) {
   const m = MEMORIES.find(x => x.id === id);
   if (!m) return;
 
+  // iOS Safari: unlock audio IMMEDIATELY inside the user-gesture handler.
+  // The 2.2s surprise animation kills the gesture context, so we pre-unlock here.
+  unlockAudio();
+
   showSurprise(() => {
     playerState.memory = m;
     playerState.slides = m.slides;
     playerState.index = startIndex;
     playerState.playing = true;
-    playerState.durations = new Array(m.slides.length).fill(5); // Default 5s for images
+    playerState.durations = new Array(m.slides.length).fill(5);
     playerState.offsets = new Array(m.slides.length).fill(0);
     playerState.totalDuration = 0;
 
@@ -339,18 +343,30 @@ function playMemory(id, startIndex = 0) {
     document.getElementById('playerOverlay').style.display = 'block';
     gsap.fromTo('#playerOverlay', { opacity: 0 }, { opacity: 1, duration: 0.6 });
 
-    // Initialize the "total timeline" by assuming 5s for each video until metadata loads
-    // This prevents the progress bar from jumping too much.
     calculateGlobalTimeline();
-    
     renderPlayerSlide();
     startPlayerInterval();
     tryPlayMusic();
     saveContinueWatching(id, startIndex);
-    
-    // Start pre-scanning video durations for accurate timeline
     preScanDurations();
   });
+}
+
+// Unlock the audio element on first user gesture so iOS allows later .play() calls
+let audioUnlocked = false;
+function unlockAudio() {
+  if (audioUnlocked) return;
+  const audio = document.getElementById('bgMusic');
+  audio.volume = 0;
+  const p = audio.play();
+  if (p !== undefined) {
+    p.then(() => {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.volume = 0.4;
+      audioUnlocked = true;
+    }).catch(() => {});
+  }
 }
 
 function calculateGlobalTimeline() {
@@ -594,7 +610,9 @@ function setVolume(val) {
 function tryPlayMusic() {
   const audio = document.getElementById('bgMusic');
   audio.volume = 0.4;
-  audio.play().catch(() => {}); // graceful fail if no file
+  // If already unlocked by unlockAudio(), this will succeed on iOS too
+  const p = audio.play();
+  if (p !== undefined) p.catch(() => {});
 }
 
 // ===== CONTINUE WATCHING =====
