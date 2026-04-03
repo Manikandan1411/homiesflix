@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HOMIEFLIX — Album Gallery</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/homieflix.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <!-- GSAP for premium animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    /* ── ALBUM HEADER ── */
+    .album-header {
+      min-height: 42vh;
+      display: flex; flex-direction: column;
+      align-items: flex-start; justify-content: flex-end;
+      padding: 7rem 3rem 2.5rem;
+      position: relative; overflow: hidden;
+    }
+    .album-header-bg {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      filter: brightness(0.35);
+      transform: scale(1.05);
+      animation: slowZoom 12s ease infinite alternate;
+    }
+    @keyframes slowZoom { from { transform: scale(1.05); } to { transform: scale(1.12); } }
+    .album-header-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,10,10,1) 0%, rgba(10,10,10,0.2) 70%, transparent 100%);
+    }
+    .album-header-content { position: relative; z-index: 2; }
+    .album-back-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      color: rgba(255,255,255,0.6); font-size: 0.78rem; font-weight: 600;
+      text-decoration: none; letter-spacing: 0.12em; text-transform: uppercase;
+      transition: color 0.2s; margin-bottom: 1.2rem;
+    }
+    .album-back-btn:hover { color: #fff; }
+    .album-header-eyebrow {
+      font-size: 0.7rem; letter-spacing: 0.3em; color: var(--hf-red);
+      text-transform: uppercase; font-weight: 700; margin-bottom: 0.4rem;
+    }
+    .album-header-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 6rem);
+      letter-spacing: 0.05em; line-height: 1; margin-bottom: 1rem;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .album-header-stats {
+      display: flex; gap: 1.5rem; align-items: center;
+      flex-wrap: wrap;
+    }
+    .album-stat {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.82rem; color: rgba(255,255,255,0.7);
+    }
+    .album-stat strong { color: #fff; font-size: 1rem; }
+
+    /* ── TOOLBAR ── */
+    .gallery-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 3rem; border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-wrap: wrap; gap: 1rem;
+      position: sticky; top: 0;
+      background: rgba(10,10,10,0.94); backdrop-filter: blur(14px); z-index: 100;
+    }
+    .toolbar-left { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+    .filter-btn {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+      color: var(--hf-muted); padding: 0.38rem 1rem; border-radius: 20px;
+      font-size: 0.75rem; font-weight: 600; cursor: pointer;
+      font-family: var(--font-body); transition: all 0.2s; white-space: nowrap;
+    }
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--hf-red); color: #fff; border-color: var(--hf-red);
+    }
+    .media-pill {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px; padding: 0.38rem 0.9rem;
+      font-size: 0.75rem; color: var(--hf-muted);
+    }
+    .media-pill span { color: #fff; font-weight: 700; }
+
+    /* ── GALLERY GRID ── */
+    .gallery-wrap { padding: 2rem 3rem 6rem; }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 10px;
+    }
+    /* Span first item big */
+    .gallery-grid .gallery-item:first-child {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+    .gallery-item {
+      position: relative; border-radius: 8px; overflow: hidden;
+      aspect-ratio: 1; background: var(--hf-surface2); cursor: pointer;
+    }
+    .gallery-item:first-child { aspect-ratio: unset; min-height: 410px; }
+    .gallery-item img, .gallery-item video {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.45s ease;
+    }
+    .gallery-item:hover img, .gallery-item:hover video { transform: scale(1.07); }
+    .gallery-item-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0); transition: background 0.3s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .gallery-item:hover .gallery-item-overlay { background: rgba(0,0,0,0.3); }
+    .vid-badge {
+      position: absolute; top: 0.5rem; left: 0.5rem;
+      background: rgba(0,0,0,0.72); border-radius: 4px;
+      padding: 0.15rem 0.5rem; font-size: 0.62rem; font-weight: 700;
+      color: #fff; letter-spacing: 0.06em; pointer-events: none;
+    }
+    .vid-play-btn {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(255,255,255,0.92); display: flex;
+      align-items: center; justify-content: center; font-size: 1.2rem; color: #000;
+      opacity: 0; transition: opacity 0.25s; pointer-events: none;
+    }
+    .gallery-item:hover .vid-play-btn { opacity: 1; }
+
+    /* ── EMPTY STATE ── */
+    .gallery-empty {
+      grid-column: 1 / -1;
+      text-align: center; padding: 6rem 2rem;
+    }
+    .gallery-empty-icon { font-size: 5rem; margin-bottom: 1.5rem; opacity: 0.4; animation: bounce 2s infinite; }
+    .gallery-empty h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.8rem; }
+    .gallery-empty p { color: var(--hf-muted); font-size: 0.9rem; line-height: 1.8; max-width: 520px; margin: 0 auto; }
+    .how-to-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 1.5rem 2rem;
+      max-width: 560px; margin: 2rem auto 0;
+      text-align: left;
+    }
+    .how-to-box h4 { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--hf-gold); margin-bottom: 1rem; }
+    .how-to-step {
+      display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 0.9rem;
+    }
+    .step-num {
+      background: var(--hf-red); color: #fff;
+      width: 24px; height: 24px; border-radius: 50%;
+      font-size: 0.7rem; font-weight: 700; display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .step-text { font-size: 0.82rem; color: rgba(255,255,255,0.75); line-height: 1.6; }
+    .step-text code {
+      background: rgba(229,9,20,0.15); border: 1px solid rgba(229,9,20,0.3);
+      padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.78rem;
+      color: var(--hf-red); font-family: monospace;
+    }
+
+    /* ── PHOTO LIGHTBOX ── */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 9100;
+      background: rgba(0,0,0,0.98); display: none;
+      align-items: center; justify-content: center;
+      backdrop-filter: blur(20px);
+    }
+    .lightbox.open { display: flex; }
+    .lb-content {
+      position: relative; display: flex; align-items: center; justify-content: center;
+      width: 100%; height: 100%;
+    }
+    .lb-img {
+      max-height: 90vh; max-width: 90vw; object-fit: contain;
+      border-radius: 4px; box-shadow: 0 40px 100px rgba(0,0,0,0.9);
+      user-select: none; position: relative; z-index: 1;
+    }
+    .lb-close {
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+      color: #fff; width: 48px; height: 48px; border-radius: 50%;
+      font-size: 1.2rem; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 10; backdrop-filter: blur(10px);
+    }
+    .lb-close:hover { background: var(--hf-red); border-color: var(--hf-red); transform: rotate(90deg); }
+    
+    .lb-toolbar {
+      position: absolute; top: 1.5rem; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 1rem; align-items: center;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      padding: 0.6rem 1.2rem; border-radius: 30px; backdrop-filter: blur(12px);
+      z-index: 10;
+    }
+    .lb-tool-btn {
+      background: transparent; border: none; color: rgba(255,255,255,0.7);
+      font-size: 0.9rem; cursor: pointer; transition: color 0.2s;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .lb-tool-btn:hover { color: #fff; }
+
+    .lb-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      color: #fff; width: 60px; height: 60px; border-radius: 50%;
+      font-size: 2rem; cursor: pointer; display: flex; align-items: center;
+      justify-content: center; backdrop-filter: blur(8px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 5;
+    }
+    .lb-nav:hover { background: rgba(255,255,255,0.15); transform: translateY(-50%) scale(1.1); }
+    .lb-prev { left: 2rem; }
+    .lb-next { right: 2rem; }
+    
+    .lb-info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%);
+      padding: 4rem 2rem 2rem; text-align: center; pointer-events: none;
+    }
+    .lb-filename { font-size: 1rem; font-weight: 600; color: #fff; margin-bottom: 0.4rem; letter-spacing: 0.05em; }
+    .lb-counter { font-size: 0.75rem; color: var(--hf-muted); text-transform: uppercase; letter-spacing: 0.2em; }
+
+    .lb-fullscreen-btn {
+      background: rgba(255,255,255,0.1); border: none; color: #fff;
+      padding: 0.5rem 1rem; border-radius: 4px; font-size: 0.7rem;
+      font-weight: 700; cursor: pointer; text-transform: uppercase;
+      letter-spacing: 0.1em; transition: 0.2s;
+    }
+    .lb-fullscreen-btn:hover { background: var(--hf-red); }
+
+    /* ── VIDEO MODAL ── */
+    .video-modal {
+      position: fixed; inset: 0; z-index: 9100;
+      background: rgba(0,0,0,0.98); display: none;
+      align-items: center; justify-content: center; flex-direction: column;
+    }
+    .video-modal.open { display: flex; }
+    .video-modal video {
+      max-height: 84vh; max-width: 90vw;
+      border-radius: 10px; box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+      animation: lbIn 0.3s ease;
+    }
+    .vm-close {
+      position: absolute; top: 1.2rem; right: 1.2rem;
+      background: rgba(255,255,255,0.1); border: none; color: #fff;
+      width: 42px; height: 42px; border-radius: 50%; font-size: 1rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .vm-close:hover { background: rgba(229,9,20,0.9); }
+    .vm-name { margin-top: 1rem; font-size: 0.82rem; color: rgba(255,255,255,0.5); letter-spacing: 0.06em; }
+
+    /* ── LOADING SKELETON ── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--hf-surface2) 25%, #2a2a2a 50%, var(--hf-surface2) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 8px; aspect-ratio: 1;
+    }
+    @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .album-header { padding: 6rem 1.5rem 2rem; }
+      .gallery-toolbar { padding: 1rem 1.5rem; }
+      .gallery-wrap { padding: 1.5rem 1.5rem 5rem; }
+      .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+      .gallery-grid .gallery-item:first-child { grid-column: span 2; min-height: 280px; }
+      .lb-nav { display: none; }
+    }
+    @media (max-width: 500px) {
+      .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+      .gallery-grid .gallery-item:first-child { grid-column: span 3; min-height: 220px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="hf-navbar scrolled" id="mainNav">
+  <div class="hf-logo"><a href="index.html" style="text-decoration:none;color:inherit;">HOMIEFLIX</a></div>
+  <div class="hf-nav-links">
+    <a href="index.html">Home</a>
+    <a href="albums.html" class="active">Albums</a>
+    <a href="timeline.html">Timeline</a>
+    <a href="signatures.html">Signatures</a>
+  </div>
+  <div class="hf-nav-right"><div class="hf-avatar">H</div></div>
+</nav>
+
+<!-- ALBUM HEADER -->
+<div class="album-header">
+  <div class="album-header-bg" id="albumHeaderBg"></div>
+  <div class="album-header-overlay"></div>
+  <div class="album-header-content">
+    <a href="albums.html" class="album-back-btn">← All Albums</a>
+    <div class="album-header-eyebrow">🎬 HOMIEFLIX ALBUM</div>
+    <h1 class="album-header-title" id="albumTitle">Loading...</h1>
+    <div class="album-header-stats">
+      <div class="album-stat">📸 <strong id="photoCount">0</strong>&nbsp;Photos</div>
+      <div class="album-stat">🎬 <strong id="videoCount">0</strong>&nbsp;Videos</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOOLBAR -->
+<div class="gallery-toolbar">
+  <div class="toolbar-left">
+    <div class="media-pill"><span id="totalCount">0</span> memories</div>
+    <button class="filter-btn active" id="filterAll"    onclick="setFilter('all')">All</button>
+    <button class="filter-btn"        id="filterPhotos" onclick="setFilter('photo')">📸 Photos</button>
+    <button class="filter-btn"        id="filterVideos" onclick="setFilter('video')">🎬 Videos</button>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<div class="gallery-wrap">
+  <div class="gallery-grid" id="galleryGrid">
+    <!-- skeleton placeholders while loading -->
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+  </div>
+</div>
+
+<!-- PHOTO LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lb-toolbar">
+    <button class="lb-tool-btn" id="lbFsBtn" onclick="toggleFullscreen()">
+      <span id="fsIcon">⛶</span> Full Screen
+    </button>
+  </div>
+  
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  
+  <div class="lb-content">
+    <button class="lb-nav lb-prev" onclick="lbNav(-1)">‹</button>
+    <img class="lb-img" id="lbImg" src="" alt="" onclick="lbNav(1)" />
+    <button class="lb-nav lb-next" onclick="lbNav(1)">›</button>
+  </div>
+  
+  <div class="lb-info">
+    <div class="lb-filename" id="lbFilename"></div>
+    <div class="lb-counter"  id="lbCounter"></div>
+  </div>
+</div>
+
+<!-- VIDEO MODAL -->
+<div class="video-modal" id="videoModal" onclick="vmBgClick(event)">
+  <button class="vm-close" onclick="closeVideoModal()">✕</button>
+  <video id="videoPlayer" controls playsinline></video>
+  <div class="vm-name" id="vmName"></div>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="data/memories.js"></script>
+<script>
+  AOS.init({ duration: 600, once: true });
+
+  // ──────────────────────────────────────────────
+  // STATE
+  // ──────────────────────────────────────────────
+  let albumId, album, FOLDER;
+  let allMedia    = [];   // { type:'image'|'video', filename, src, name }
+  let lbPhotos    = [];   // only images, for lightbox
+  let lbIdx       = 0;
+  let activeFilter = 'all';
+
+  // ──────────────────────────────────────────────
+  // INIT
+  // ──────────────────────────────────────────────
+  window.addEventListener('load', async () => {
+    if (typeof initMemoriesData === 'function') {
+      await initMemoriesData();
+    }
+    
+    const params    = new URLSearchParams(window.location.search);
+    albumId   = parseInt(params.get('id') ?? '0');
+    album     = MEMORIES.find(m => m.id === albumId) || MEMORIES[0];
+    
+    if (!album) {
+       document.getElementById('galleryGrid').innerHTML = '<div class="gallery-empty"><h3>Album not found!</h3></div>';
+       return;
+    }
+    
+    FOLDER    = album.folderPath; // e.g. "albums/hicet-family/"
+    
+    renderHeader();
+    initNavbarScroll();
+    await loadManifest();
+  });
+
+  function initNavbarScroll() {
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
+  }
+
+  function renderHeader() {
+    document.title = `HOMIEFLIX — ${album.title}`;
+    document.getElementById('albumTitle').textContent     = album.title;
+    document.getElementById('albumHeaderBg').style.backgroundImage = `url('${album.poster}')`;
+  }
+
+  // ──────────────────────────────────────────────
+  // LOAD MANIFEST
+  // ──────────────────────────────────────────────
+  async function loadManifest() {
+    allMedia = [];
+    
+    // Fallback: gracefully load from the in-memory slides already constructed in data/memories.js
+    (album.slides || []).forEach(slide => {
+      let filename = slide.src.split('/').pop();
+      allMedia.push({ 
+        type: slide.type, 
+        filename: filename, 
+        src: slide.src, 
+        name: filename 
+      });
+    });
+
+    renderGallery();
+  }
+
+  // ──────────────────────────────────────────────
+  // RENDER GALLERY
+  // ──────────────────────────────────────────────
+  function renderGallery() {
+    const photos  = allMedia.filter(m => m.type === 'image');
+    const videos  = allMedia.filter(m => m.type === 'video');
+
+    document.getElementById('photoCount').textContent = photos.length;
+    document.getElementById('videoCount').textContent = videos.length;
+    document.getElementById('totalCount').textContent = allMedia.length;
+
+    const filtered = activeFilter === 'all'    ? allMedia
+                   : activeFilter === 'photo'  ? photos
+                   :                             videos;
+
+    lbPhotos = filtered.filter(m => m.type === 'image');
+
+    const grid = document.getElementById('galleryGrid');
+
+    if (!filtered.length) {
+      grid.innerHTML = buildEmptyState();
+      return;
+    }
+
+    grid.innerHTML = filtered.map((item, idx) => {
+      // By using only the index in the onclick, we completely avoid path syntax errors with quotes!
+      if (item.type === 'image') {
+        return `<div class="gallery-item" data-aos="fade-up" data-aos-delay="${(idx % 6)*60}" 
+                     onclick="openPhotoByIndex(${idx})">
+                  <img src="${escHtml(item.src)}" alt="${escHtml(item.name)}" loading="lazy" />
+                  <div class="gallery-item-overlay"></div>
+                </div>`;
+      } else {
+        return `<div class="gallery-item" data-aos="fade-up" data-aos-delay="${(idx % 6)*60}" 
+                     onclick="openVideoByIndex(${idx})">
+                  <video src="${escHtml(item.src)}" preload="metadata" muted></video>
+                  <div class="vid-badge">▶ VIDEO</div>
+                  <div class="gallery-item-overlay">
+                    <div class="vid-play-btn">▶</div>
+                  </div>
+                </div>`;
+      }
+    }).join('');
+
+    AOS.refresh();
+  }
+
+  function escHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function setFilter(f) {
+    activeFilter = f;
+    ['All','Photos','Videos'].forEach(n => document.getElementById('filter'+n).classList.remove('active'));
+    document.getElementById('filter'+f.charAt(0).toUpperCase()+f.slice(1)).classList.add('active');
+    renderGallery();
+  }
+
+  // ──────────────────────────────────────────────
+  // EMPTY STATE — shows exact instructions
+  // ──────────────────────────────────────────────
+  function buildEmptyState() {
+    const folderDisplay = `homieflix/${FOLDER}`;
+    return `
+      <div class="gallery-empty">
+        <div class="gallery-empty-icon">📭</div>
+        <h3>${album.title} is empty</h3>
+        <p>Add your photos & videos to this album's folder,<br>then update the manifest so the app can find them.</p>
+        <div class="how-to-box">
+          <h4>📋 How to add memories to this album</h4>
+          <div class="how-to-step">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              Copy your photos &amp; videos into the folder:<br>
+              <code>${folderDisplay}</code>
+            </div>
+          </div>
+          <div class="how-to-step">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              Open <code>${FOLDER}manifest.json</code> and list your files:
+              <pre style="background:rgba(0,0,0,0.3);border-radius:6px;padding:0.8rem;margin-top:0.5rem;font-size:0.75rem;color:#aaa;overflow-x:auto;">{
+  "photos": ["photo1.jpg", "photo2.jpg"],
+  "videos": ["clip1.mp4"]
+}</pre>
+            </div>
+          </div>
+          <div class="how-to-step">
+            <div class="step-num">3</div>
+            <div class="step-text">Refresh this page — your memories appear instantly! When deployed to Vercel, everyone sees them.</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // ──────────────────────────────────────────────
+  // PHOTO LIGHTBOX (Advanced)
+  // ──────────────────────────────────────────────
+  function openPhotoByIndex(idx) {
+    const media = activeFilter === 'all' ? allMedia : (activeFilter === 'photo' ? allMedia.filter(m=>m.type==='image') : allMedia.filter(m=>m.type==='video'));
+    const item = media[idx];
+    
+    // In Lightbox, we only want to cycle through images
+    lbIdx = lbPhotos.findIndex(p => p.src === item.src);
+    if (lbIdx === -1) lbIdx = 0;
+    
+    showLightbox(true);
+  }
+
+  function showLightbox(initial = false) {
+    const item = lbPhotos[lbIdx];
+    const img  = document.getElementById('lbImg');
+    const lightbox = document.getElementById('lightbox');
+    
+    if (initial) {
+      lightbox.style.display = 'flex';
+      gsap.fromTo(lightbox, { opacity: 0 }, { opacity: 1, duration: 0.4 });
+      gsap.fromTo(img, { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: "back.out(1.7)" });
+    } else {
+      gsap.to(img, { opacity: 0, x: -20, duration: 0.2, onComplete: () => {
+        img.src = item.src;
+        gsap.fromTo(img, { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.3 });
+      }});
+    }
+
+    img.src = item.src;
+    document.getElementById('lbFilename').textContent = item.name;
+    document.getElementById('lbCounter').textContent  = `${lbIdx + 1} / ${lbPhotos.length}`;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function lbNav(dir) {
+    const n = lbIdx + dir;
+    if (n < 0 || n >= lbPhotos.length) return;
+    lbIdx = n;
+    showLightbox(false);
+  }
+
+  function closeLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    
+    gsap.to(lightbox, { opacity: 0, duration: 0.3, onComplete: () => {
+      lightbox.style.display = 'none';
+      document.body.style.overflow = '';
+    }});
+  }
+
+  // Native Fullscreen API
+  function toggleFullscreen() {
+    const lb = document.getElementById('lightbox');
+    if (!document.fullscreenElement) {
+      lb.requestFullscreen().catch(err => console.log(err));
+      document.getElementById('fsIcon').textContent = '📥';
+    } else {
+      document.exitFullscreen();
+      document.getElementById('fsIcon').textContent = '⛶';
+    }
+  }
+
+  // Close on click background
+  document.getElementById('lightbox').addEventListener('click', (e) => {
+    if (e.target.id === 'lightbox' || e.target.classList.contains('lb-content')) {
+      closeLightbox();
+    }
+  });
+
+  // ──────────────────────────────────────────────
+  // VIDEO PLAYER
+  // ──────────────────────────────────────────────
+  function openVideoByIndex(idx) {
+    const media = activeFilter === 'all' ? allMedia : (activeFilter === 'photo' ? allMedia.filter(m=>m.type==='image') : allMedia.filter(m=>m.type==='video'));
+    const item = media[idx];
+    openVideo(item.src, item.name);
+  }  function openVideo(src, name) {
+    const vp = document.getElementById('videoPlayer');
+    vp.src = src;
+    vp.play().catch(() => {});
+    document.getElementById('vmName').textContent = name;
+    document.getElementById('videoModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeVideoModal() {
+    const vp = document.getElementById('videoPlayer');
+    vp.pause(); vp.src = '';
+    document.getElementById('videoModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function vmBgClick(e) { if (e.target.id === 'videoModal') closeVideoModal(); }
+
+  // ──────────────────────────────────────────────
+  // KEYBOARD
+  // ──────────────────────────────────────────────
+  document.addEventListener('keydown', e => {
+    if (document.getElementById('lightbox').classList.contains('open')) {
+      if (e.key === 'ArrowRight') lbNav(1);
+      if (e.key === 'ArrowLeft')  lbNav(-1);
+      if (e.key === 'Escape')     closeLightbox();
+    }
+    if (document.getElementById('videoModal').classList.contains('open')) {
+      if (e.key === 'Escape') closeVideoModal();
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HOMIEFLIX — Timeline</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/homieflix.css"/>
+  <link rel="stylesheet" href="css/animations.css"/>
+</head>
+<body class="timeline-page">
+
+<nav class="hf-navbar">
+  <div class="hf-logo"><a href="index.html">HOMIEFLIX</a></div>
+  <div class="hf-nav-links">
+    <a href="index.html">Home</a>
+    <a href="albums.html">Albums</a>
+    <a href="timeline.html" class="active">Timeline</a>
+    <a href="signatures.html">Signatures</a>
+  </div>
+</nav>
+
+<div class="timeline-hero">
+  <h1 data-aos="fade-down">Our Story</h1>
+  <p data-aos="fade-up" data-aos-delay="200">Every chapter. Every moment. Every memory.</p>
+  <div class="tl-scroll-hint">↓ Scroll through time</div>
+</div>
+
+<div class="timeline-container" id="timelineContainer">
+  <!-- Rendered by JS -->
+</div>
+
+<div class="timeline-end" data-aos="fade-up">
+  <div class="tl-end-text">
+    <div class="tl-end-icon">🎬</div>
+    <h2>The Story Continues...</h2>
+    <p>More memories yet to be made.</p>
+    <a href="index.html" class="btn-play">← Back to HOMIEFLIX</a>
+  </div>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="data/memories.js"></script>
+<script src="js/timeline.js"></script>
+</body>
+</html>

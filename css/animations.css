@@ -1,0 +1,186 @@
+/* ===== ANIMATIONS.CSS ===== */
+
+/* INTRO animations */
+@keyframes logoReveal {
+  0% { opacity: 0; transform: scale(0.7) skewX(-5deg); letter-spacing: 0.5em; }
+  60% { opacity: 1; transform: scale(1.05) skewX(0); letter-spacing: 0.15em; }
+  100% { transform: scale(1) skewX(0); letter-spacing: 0.15em; }
+}
+
+@keyframes logoGlow {
+  0%, 100% { text-shadow: 0 0 40px rgba(229,9,20,0.6), 0 0 80px rgba(229,9,20,0.3); }
+  50% { text-shadow: 0 0 80px rgba(229,9,20,0.9), 0 0 160px rgba(229,9,20,0.5), 0 0 240px rgba(229,9,20,0.2); }
+}
+
+@keyframes sweepLight {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.88) translateY(30px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes surpriseIn {
+  from { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+@keyframes lockPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(229,9,20,0.4)); }
+  50%       { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(229,9,20,0.8)); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50%       { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(10px); }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(60px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes scanLine {
+  0%   { top: -5%; }
+  100% { top: 105%; }
+}
+
+@keyframes confettiFall {
+  0%   { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes particleFloat {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+@keyframes quoteReveal {
+  0%   { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0% 0 0); }
+}
+
+@keyframes flashBang {
+  0%   { opacity: 0; }
+  10%  { opacity: 1; }
+  30%  { opacity: 0.6; }
+  50%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes playerSlideIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes playerSlideOut {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(1.05); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Utility classes */
+.fade-up    { animation: fadeUp 0.6s ease forwards; }
+.fade-in    { animation: fadeIn 0.5s ease forwards; }
+.slide-in   { animation: slideInRight 0.5s ease forwards; }
+
+/* Skeleton loader */
+.skeleton {
+  background: linear-gradient(90deg, #1a1a1a 25%, #2a2a2a 50%, #1a1a1a 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+
+/* Glow text */
+.glow-red {
+  text-shadow: 0 0 20px rgba(229,9,20,0.8), 0 0 40px rgba(229,9,20,0.4);
+}
+
+/* Page transition overlay */
+#page-transition {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+#page-transition.active { opacity: 1; pointer-events: all; }
+
+/* Particles container */
+.particles-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3500;
+}
+.particle {
+  position: absolute;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--hf-red);
+}
+
+/* Confetti piece */
+.confetti-piece {
+  position: fixed;
+  width: 10px; height: 10px;
+  pointer-events: none;
+  z-index: 3500;
+  animation: confettiFall linear forwards;
+}
+
+/* Scan line effect */
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 50%, rgba(0,0,0,0.04) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Vignette */
+.vignette::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.6) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Noise overlay */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 9990;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}

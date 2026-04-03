@@ -1,0 +1,14 @@
+{
+  "photos": [
+    "photo1.jpeg",
+    "photo2.jpeg",
+    "photo3.jpeg",
+    "photo4.jpeg",
+    "photo5.jpeg",
+    "photo6.jpeg"
+  ],
+  "videos": [
+    "clip1.mp4",
+    "clip2.mp4"
+  ]
+}
