@@ -28,20 +28,38 @@
   </div>
 
   <!-- NAVBAR -->
-  <nav class="hf-navbar" id="main-navbar" style="display:none">
-    <div class="hf-logo">HOMIEFLIX</div>
+  <nav class="hf-navbar" id="main-navbar">
+    <div class="hf-logo"><a href="index.html">HOMIEFLIX</a></div>
+    
     <div class="hf-nav-links">
       <a href="index.html" class="active">Home</a>
       <a href="albums.html">Albums</a>
       <a href="timeline.html">Timeline</a>
       <a href="signatures.html">Signatures</a>
-      <a href="#" onclick="openFavorites()">My List</a>
     </div>
+
     <div class="hf-nav-right">
-      <input type="text" id="searchInput" placeholder="🔍 Search memories..." class="hf-search" />
-      <div class="hf-avatar">H</div>
+      <div class="hf-search-wrap">
+        <input type="text" class="hf-search" id="searchInput" placeholder="Search memories..."/>
+      </div>
+      <div class="hf-avatar" onclick="openFavorites()">H</div>
+      
+      <!-- Hamburger Toggle -->
+      <div class="hf-menu-toggle" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
   </nav>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div class="hf-nav-mobile" id="mobileMenuOverlay">
+    <a href="index.html" onclick="toggleMobileMenu()">Home</a>
+    <a href="albums.html" onclick="toggleMobileMenu()">Albums</a>
+    <a href="timeline.html" onclick="toggleMobileMenu()">Timeline</a>
+    <a href="signatures.html" onclick="toggleMobileMenu()">Signatures</a>
+  </div>
 
   <!-- MAIN CONTENT -->
   <div id="main-content" style="display:none">
@@ -53,7 +71,7 @@
       <div class="hero-bg" id="heroBgA" style="opacity:1;"></div>
       <div class="hero-bg" id="heroBgB" style="opacity:0;"></div>
       <!-- Video layer for video clips -->
-      <video id="heroBgVideo" muted playsinline
+      <video id="heroBgVideo" muted playsinline autoplay
         style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;z-index:0;"></video>
       <div class="hero-content" data-aos="fade-right" data-aos-delay="200">
         <div class="hero-badge">🎬 UNFORGETTABLE MEMORY</div>
@@ -167,7 +185,7 @@
     <div class="player-content">
       <div class="player-slide active" id="currentSlide">
         <img id="playerImg" src="" alt="" style="display:none" />
-        <video id="playerVid" playsinline></video>
+        <video id="playerVid" muted playsinline webkit-playsinline x5-playsinline style="width:100%;height:100%;object-fit:contain;display:none;"></video>
         <div class="slide-caption" id="slideCaption"></div>
       </div>
     </div>

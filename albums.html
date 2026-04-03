@@ -262,18 +262,37 @@
 
   <!-- NAVBAR -->
   <nav class="hf-navbar scrolled">
-    <div class="hf-logo"><a href="index.html" style="text-decoration:none;color:inherit;">HOMIEFLIX</a></div>
+    <div class="hf-logo"><a href="index.html">HOMIEFLIX</a></div>
+    
     <div class="hf-nav-links">
       <a href="index.html">Home</a>
       <a href="albums.html" class="active">Albums</a>
       <a href="timeline.html">Timeline</a>
       <a href="signatures.html">Signatures</a>
     </div>
+
     <div class="hf-nav-right">
-      <input type="text" id="albumSearchInput" placeholder="🔍 Search albums..." class="hf-search" oninput="filterAlbums(this.value)" />
+      <div class="hf-search-wrap">
+        <input type="text" class="hf-search" id="albumSearchInput" placeholder="Search albums..." oninput="filterAlbums(this.value)"/>
+      </div>
       <div class="hf-avatar">H</div>
+      
+      <!-- Hamburger Toggle -->
+      <div class="hf-menu-toggle" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
   </nav>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div class="hf-nav-mobile" id="mobileMenuOverlay">
+    <a href="index.html" onclick="toggleMobileMenu()">Home</a>
+    <a href="albums.html" onclick="toggleMobileMenu()">Albums</a>
+    <a href="timeline.html" onclick="toggleMobileMenu()">Timeline</a>
+    <a href="signatures.html" onclick="toggleMobileMenu()">Signatures</a>
+  </div>
 
   <!-- ALBUMS HERO -->
   <div class="albums-hero">

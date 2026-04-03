@@ -51,4 +51,14 @@ function renderTimeline() {
   dots.forEach(d => observer.observe(d));
 }
 
+function toggleMobileMenu() {
+  const btn = document.getElementById('mobileMenuBtn');
+  const overlay = document.getElementById('mobileMenuOverlay');
+  if (btn && overlay) {
+    btn.classList.toggle('active');
+    overlay.classList.toggle('active');
+    document.body.style.overflow = overlay.classList.contains('active') ? 'hidden' : '';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', renderTimeline);

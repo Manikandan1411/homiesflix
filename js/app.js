@@ -17,10 +17,8 @@ let playerState = {
 };
 let unlockTimer = null;
 let unlockProgress = 0;
+let signatures = JSON.parse(localStorage.getItem('hf_signatures') || '[]');
 let sigCanvas, sigCtx, isDrawing = false;
-let favorites = JSON.parse(localStorage.getItem('hf_favorites') || '[]');
-let continueWatching = JSON.parse(localStorage.getItem('hf_continue') || '[]');
-let signatures = []; // Fetched from cloud
 
 // ===== INTRO SEQUENCE =====
 window.addEventListener('load', async () => {
@@ -394,12 +392,20 @@ function renderPlayerSlide() {
     if (slide.type === 'video') {
       img.style.display = 'none';
       vid.style.display = 'block';
+      
+      // Reset the video element fully (important for iOS)
+      vid.pause();
+      vid.removeAttribute('src');
+      vid.load();
+      
       vid.src = slide.src;
-      vid.muted = true; // Required for autoplay
+      // muted attribute is set in HTML; this is a belt-and-suspenders for some Android browsers
+      vid.muted = true;
       
       // Reset time display
       document.getElementById('playerTime').textContent = "0:00 / 0:00";
       
+      vid.load(); // force browser to start loading
       vid.play().catch(e => console.log("Video play blocked:", e));
       
       // Update progress and time every interval
@@ -430,6 +436,7 @@ function renderPlayerSlide() {
       document.getElementById('playerTime').textContent = ""; 
       vid.style.display = 'none';
       vid.pause();
+      vid.removeAttribute('src');
       img.style.display = 'block';
       img.src = slide.src;
       bg.style.backgroundImage = `url('${slide.src}')`;
@@ -666,16 +673,8 @@ function initSignatureCanvas() {
   initSignatures();
 }
 
-async function initSignatures() {
-  try {
-    const res = await fetch('/api/signatures');
-    if (res.ok) {
-      signatures = await res.json();
-      renderSignaturesWall();
-    }
-  } catch (e) {
-    console.error("Signatures error:", e);
-  }
+function initSignatures() {
+  renderSignaturesWall();
 }
 
 function getPos(e) {
@@ -687,32 +686,22 @@ function clearCanvas() {
   sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
 }
 
-async function saveSignature() {
+function saveSignature() {
   const name = document.getElementById('sigName').value.trim();
   const msg = document.getElementById('sigMessage').value.trim();
   if (!name && !msg) return;
 
   const drawing = sigCanvas.toDataURL();
   const entry = { name: name || 'Anonymous', msg, drawing, time: new Date().toLocaleDateString() };
-  
-  try {
-    const res = await fetch('/api/signatures', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(entry)
-    });
+  signatures.unshift(entry);
+  localStorage.setItem('hf_signatures', JSON.stringify(signatures));
 
-    if (res.ok) {
-      signatures.unshift(entry);
-      document.getElementById('sigName').value = '';
-      document.getElementById('sigMessage').value = '';
-      clearCanvas();
-      renderSignaturesWall();
-      gsap.from('.sig-entry:first-child', { opacity: 0, y: -20, duration: 0.4 });
-    }
-  } catch (e) {
-    console.error("Failed to save:", e);
-  }
+  document.getElementById('sigName').value = '';
+  document.getElementById('sigMessage').value = '';
+  clearCanvas();
+  renderSignaturesWall();
+
+  gsap.from('.sig-entry:first-child', { opacity: 0, y: -20, duration: 0.4 });
 }
 
 function renderSignaturesWall() {
@@ -747,6 +736,16 @@ document.addEventListener('keydown', e => {
   }
   if (e.key === 'Escape') closeModal();
 });
+
+function toggleMobileMenu() {
+  const btn = document.getElementById('mobileMenuBtn');
+  const overlay = document.getElementById('mobileMenuOverlay');
+  if (btn && overlay) {
+    btn.classList.toggle('active');
+    overlay.classList.toggle('active');
+    document.body.style.overflow = overlay.classList.contains('active') ? 'hidden' : '';
+  }
+}
 
 // Close modal on backdrop
 document.getElementById('memoryModal')?.addEventListener('click', function(e) {

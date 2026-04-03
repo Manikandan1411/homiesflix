@@ -276,17 +276,36 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="hf-navbar scrolled" id="mainNav">
-  <div class="hf-logo"><a href="index.html" style="text-decoration:none;color:inherit;">HOMIEFLIX</a></div>
-  <div class="hf-nav-links">
-    <a href="index.html">Home</a>
-    <a href="albums.html" class="active">Albums</a>
-    <a href="timeline.html">Timeline</a>
-    <a href="signatures.html">Signatures</a>
+  <!-- NAVBAR -->
+  <nav class="hf-navbar scrolled" id="mainNav">
+    <div class="hf-logo"><a href="index.html">HOMIEFLIX</a></div>
+    
+    <div class="hf-nav-links">
+      <a href="index.html">Home</a>
+      <a href="albums.html" class="active">Albums</a>
+      <a href="timeline.html">Timeline</a>
+      <a href="signatures.html">Signatures</a>
+    </div>
+
+    <div class="hf-nav-right">
+      <div class="hf-avatar">H</div>
+      
+      <!-- Hamburger Toggle -->
+      <div class="hf-menu-toggle" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div class="hf-nav-mobile" id="mobileMenuOverlay">
+    <a href="index.html" onclick="toggleMobileMenu()">Home</a>
+    <a href="albums.html" onclick="toggleMobileMenu()">Albums</a>
+    <a href="timeline.html" onclick="toggleMobileMenu()">Timeline</a>
+    <a href="signatures.html" onclick="toggleMobileMenu()">Signatures</a>
   </div>
-  <div class="hf-nav-right"><div class="hf-avatar">H</div></div>
-</nav>
 
 <!-- ALBUM HEADER -->
 <div class="album-header">
@@ -350,7 +369,7 @@
 <!-- VIDEO MODAL -->
 <div class="video-modal" id="videoModal" onclick="vmBgClick(event)">
   <button class="vm-close" onclick="closeVideoModal()">✕</button>
-  <video id="videoPlayer" controls playsinline></video>
+  <video id="videoPlayer" controls playsinline muted webkit-playsinline></video>
   <div class="vm-name" id="vmName"></div>
 </div>
 
@@ -391,6 +410,16 @@
     initNavbarScroll();
     await loadManifest();
   });
+
+  function toggleMobileMenu() {
+    const btn = document.getElementById('mobileMenuBtn');
+    const overlay = document.getElementById('mobileMenuOverlay');
+    if (btn && overlay) {
+      btn.classList.toggle('active');
+      overlay.classList.toggle('active');
+      document.body.style.overflow = overlay.classList.contains('active') ? 'hidden' : '';
+    }
+  }
 
   function initNavbarScroll() {
     const nav = document.getElementById('mainNav');
@@ -598,6 +627,7 @@
   }  function openVideo(src, name) {
     const vp = document.getElementById('videoPlayer');
     vp.src = src;
+    vp.muted = false; // User initiated — allow sound
     vp.play().catch(() => {});
     document.getElementById('vmName').textContent = name;
     document.getElementById('videoModal').classList.add('open');
@@ -616,8 +646,18 @@
   // ──────────────────────────────────────────────
   // KEYBOARD
   // ──────────────────────────────────────────────
+  function toggleMobileMenu() {
+  const btn = document.getElementById('mobileMenuBtn');
+  const overlay = document.getElementById('mobileMenuOverlay');
+  if (btn && overlay) {
+    btn.classList.toggle('active');
+    overlay.classList.toggle('active');
+    document.body.style.overflow = overlay.classList.contains('active') ? 'hidden' : '';
+  }
+}
+
   document.addEventListener('keydown', e => {
-    if (document.getElementById('lightbox').classList.contains('open')) {
+    if (document.getElementById('lightbox').classList.contains('open') || document.getElementById('lightbox').style.display === 'flex') {
       if (e.key === 'ArrowRight') lbNav(1);
       if (e.key === 'ArrowLeft')  lbNav(-1);
       if (e.key === 'Escape')     closeLightbox();

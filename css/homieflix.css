@@ -127,6 +127,7 @@ body {
   gap: 1rem;
 }
 
+.hf-search-wrap { display: flex; align-items: center; }
 .hf-search {
   background: rgba(255,255,255,0.1);
   border: 1px solid rgba(255,255,255,0.15);
@@ -134,11 +135,60 @@ body {
   padding: 0.4rem 0.8rem;
   border-radius: 4px;
   font-size: 0.8rem;
-  width: 180px;
+  width: 140px;
   transition: all 0.3s;
 }
-.hf-search:focus { outline: none; width: 240px; background: rgba(255,255,255,0.15); }
+.hf-search:focus { outline: none; width: 180px; background: rgba(255,255,255,0.15); }
 .hf-search::placeholder { color: var(--hf-muted); }
+
+/* Hamburger Toggle */
+.hf-menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  z-index: 1100;
+  padding: 0.5rem;
+}
+.hf-menu-toggle span {
+  width: 24px;
+  height: 2px;
+  background: #fff;
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+}
+.hf-menu-toggle.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); background: var(--hf-red); }
+.hf-menu-toggle.active span:nth-child(2) { opacity: 0; }
+.hf-menu-toggle.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); background: var(--hf-red); }
+
+/* Mobile Overlay */
+.hf-nav-mobile {
+  position: fixed;
+  inset: 0;
+  background: rgba(10,10,10,0.98);
+  backdrop-filter: blur(20px);
+  z-index: 1050;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.hf-nav-mobile.active { opacity: 1; pointer-events: all; }
+.hf-nav-mobile a {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  transform: translateY(20px);
+  transition: transform 0.4s ease, color 0.2s;
+}
+.hf-nav-mobile.active a { transform: translateY(0); }
+.hf-nav-mobile a:hover { color: var(--hf-red); }
 
 .hf-avatar {
   width: 34px; height: 34px;
@@ -1067,13 +1117,46 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--hf-red); }
 
 /* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+  .hero-content { padding: 0 2rem 4rem; max-width: 90%; }
+}
+
 @media (max-width: 768px) {
-  .hf-navbar { padding: 1rem 1.5rem; }
-  .hf-nav-links { display: none; }
-  .hero-content { padding: 0 1.5rem 4rem; }
-  .hf-row-section { padding: 1rem 1rem; }
+  .hf-navbar { padding: 0.8rem 1.5rem; }
+  .hf-nav-links, .hf-search-wrap { display: none; }
+  .hf-menu-toggle { display: flex; }
+  
+  /* Hero Refinement */
+  .hero-banner { height: 70vh; }
+  .hero-title { font-size: clamp(2.2rem, 10vw, 3.5rem); margin-bottom: 0.5rem; }
+  .hero-desc { font-size: 0.9rem; margin-bottom: 1.5rem; line-height: 1.5; }
+  .hero-controls { right: 1.5rem; bottom: 3rem; }
+  .hero-progress-container { width: 100px; }
+  
+  /* Section Spacing */
+  .hf-row-section { padding: 1rem 1.5rem; }
+  .row-title { font-size: 1rem; margin-bottom: 0.6rem; }
+  
+  /* Cinematic Player (Mobile) */
+  .player-slide img, .player-slide video { max-width: 95vw; max-height: 60vh; }
+  .player-btns { gap: 1.8rem; justify-content: center; }
+  .player-btns button { font-size: 1.8rem; padding: 0.5rem; }
+  .skip-btn { display: none; } /* Hide secondary buttons to focus on core play/pause */
+  .exit-btn { font-size: 0.75rem !important; padding: 0.3rem 0.8rem !important; }
+  .player-time-info { font-size: 0.7rem; }
+  .player-progress-bar { height: 6px; } /* Thicker for touch */
+  .vol-wrap { display: none; } /* Mobile users use device volume */
+
+  /* Timeline adjustment */
   .timeline-container::before { left: 2rem; }
   .tl-item { padding: 1rem 1.5rem; gap: 1.5rem; flex-direction: column !important; }
   .tl-dot { display: none; }
   .tl-spacer { display: none; }
+}
+
+@media (max-width: 480px) {
+  .hero-btns { flex-direction: column; gap: 0.8rem; }
+  .btn-play, .btn-info { width: 100%; justify-content: center; padding: 0.8rem; }
+  .hero-content { padding-bottom: 2rem; }
+  .hero-controls { display: none; } /* Clear clutter on very small screens */
 }

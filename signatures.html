@@ -316,17 +316,34 @@
 
   <!-- NAVBAR -->
   <nav class="hf-navbar scrolled">
-    <div class="hf-logo"><a href="index.html" style="text-decoration:none;color:inherit;">HOMIEFLIX</a></div>
+    <div class="hf-logo"><a href="index.html">HOMIEFLIX</a></div>
+    
     <div class="hf-nav-links">
       <a href="index.html">Home</a>
       <a href="albums.html">Albums</a>
       <a href="timeline.html">Timeline</a>
       <a href="signatures.html" class="active">Signatures</a>
     </div>
+
     <div class="hf-nav-right">
       <div class="hf-avatar">H</div>
+      
+      <!-- Hamburger Toggle -->
+      <div class="hf-menu-toggle" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
     </div>
   </nav>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div class="hf-nav-mobile" id="mobileMenuOverlay">
+    <a href="index.html" onclick="toggleMobileMenu()">Home</a>
+    <a href="albums.html" onclick="toggleMobileMenu()">Albums</a>
+    <a href="timeline.html" onclick="toggleMobileMenu()">Timeline</a>
+    <a href="signatures.html" onclick="toggleMobileMenu()">Signatures</a>
+  </div>
 
   <!-- HERO -->
   <div class="sig-page-hero">
@@ -389,32 +406,21 @@
     AOS.init({ duration: 700, once: true, easing: 'ease-out-cubic' });
 
     // ===== STATE =====
-    let signatures = []; // Fetched from cloud
+    let signatures = JSON.parse(localStorage.getItem('hf_signatures') || '[]');
+    let favorites = JSON.parse(localStorage.getItem('hf_favorites') || '[]');
+    let continueWatching = JSON.parse(localStorage.getItem('hf_continue') || '[]');
     let sigCanvas, sigCtx, isDrawing = false, currentColor = '#e50914';
 
     // ===== INIT =====
     window.addEventListener('load', () => {
       initCanvas();
-      fetchSignatures();
+      renderWall();
       initNavbarScroll();
     });
 
-    async function fetchSignatures() {
-      const grid = document.getElementById('sigWallGrid');
-      grid.innerHTML = '<div class="sig-wall-empty"><div class="sig-wall-empty-icon" style="animation:spin 2s linear infinite">⏳</div><p>Fetching international signatures...</p></div>';
-      
-      try {
-        const res = await fetch('/api/signatures');
-        if (res.ok) {
-          signatures = await res.json();
-          renderWall();
-        } else {
-          throw new Error('KV Not Connected');
-        }
-      } catch (e) {
-        console.error("Signatures error:", e);
-        grid.innerHTML = '<div class="sig-wall-empty"><div class="sig-wall-empty-icon">🔴</div><p>Cloud database is not connected yet. Check your Vercel KV settings!</p></div>';
-      }
+    function fetchSignatures() {
+      // Logic removed as we are back to local storage
+      renderWall();
     }
 
     function initNavbarScroll() {
@@ -460,7 +466,7 @@
     }
 
     // ===== SAVE SIGNATURE =====
-    async function saveSignature() {
+    function saveSignature() {
       const name = document.getElementById('sigName').value.trim();
       const msg = document.getElementById('sigMessage').value.trim();
       const btn = document.querySelector('.btn-save-sig-page');
@@ -478,41 +484,24 @@
         time: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
       };
 
-      try {
-        btn.disabled = true;
-        btn.innerHTML = '💾 Saving...';
+      // Save to Local Storage
+      signatures.unshift(entry);
+      localStorage.setItem('hf_signatures', JSON.stringify(signatures));
+      
+      // Reset form
+      document.getElementById('sigName').value = '';
+      document.getElementById('sigMessage').value = '';
+      clearCanvas();
 
-        const res = await fetch('/api/signatures', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(entry)
-        });
+      renderWall();
+      showToast();
+      launchConfetti();
 
-        if (res.ok) {
-          // Success! Update local list and UI
-          signatures.unshift(entry);
-          
-          // Reset form
-          document.getElementById('sigName').value = '';
-          document.getElementById('sigMessage').value = '';
-          clearCanvas();
-
-          renderWall();
-          showToast();
-          launchConfetti();
-
-          // Animate the latest card
-          setTimeout(() => {
-            const firstCard = document.querySelector('.sig-wall-card');
-            if (firstCard) gsap.from(firstCard, { opacity: 0, y: -20, scale: 0.9, duration: 0.5, ease: 'back.out(1.4)' });
-          }, 50);
-        }
-      } catch (error) {
-        alert("Failed to save signature. Is the Vercel KV connected?");
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '💾 Save to Wall';
-      }
+      // Animate the latest card
+      setTimeout(() => {
+        const firstCard = document.querySelector('.sig-wall-card');
+        if (firstCard) gsap.from(firstCard, { opacity: 0, y: -20, scale: 0.9, duration: 0.5, ease: 'back.out(1.4)' });
+      }, 50);
     }
 
     // ===== RENDER WALL =====

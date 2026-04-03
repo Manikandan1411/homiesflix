@@ -12,15 +12,33 @@
 </head>
 <body class="timeline-page">
 
-<nav class="hf-navbar">
-  <div class="hf-logo"><a href="index.html">HOMIEFLIX</a></div>
-  <div class="hf-nav-links">
-    <a href="index.html">Home</a>
-    <a href="albums.html">Albums</a>
-    <a href="timeline.html" class="active">Timeline</a>
-    <a href="signatures.html">Signatures</a>
+  <nav class="hf-navbar">
+    <div class="hf-logo"><a href="index.html">HOMIEFLIX</a></div>
+    
+    <div class="hf-nav-links">
+      <a href="index.html">Home</a>
+      <a href="albums.html">Albums</a>
+      <a href="timeline.html" class="active">Timeline</a>
+      <a href="signatures.html">Signatures</a>
+    </div>
+
+    <div class="hf-nav-right">
+      <!-- Hamburger Toggle -->
+      <div class="hf-menu-toggle" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div class="hf-nav-mobile" id="mobileMenuOverlay">
+    <a href="index.html" onclick="toggleMobileMenu()">Home</a>
+    <a href="albums.html" onclick="toggleMobileMenu()">Albums</a>
+    <a href="timeline.html" onclick="toggleMobileMenu()">Timeline</a>
+    <a href="signatures.html" onclick="toggleMobileMenu()">Signatures</a>
   </div>
-</nav>
 
 <div class="timeline-hero">
   <h1 data-aos="fade-down">Our Story</h1>
